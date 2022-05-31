@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ecomm.mango.dto.CustomerDTO;
+import com.ecomm.mango.service.CustomerService;
 import com.ecomm.grapes.entity.Customer;
 import com.ecomm.grapes.repository.CustomerRepo;
+
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -16,7 +18,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@Autowired
 	private CustomerRepo customerRepo;
 
-	public String addCustomer(CustomerDTO customerdto) {
+	public CustomerDTO addCustomer(CustomerDTO customerdto) {
 		Customer customer = Customer.builder().firstName(customerdto.getFirstName()).lastName(customerdto.getLastName())
 				.email(customerdto.getEmail()).phone(customerdto.getPhone()).build();
 
@@ -24,14 +26,15 @@ public class CustomerServiceImpl implements CustomerService {
 		if (addedCustomer != null) {
 			Integer customerId = addedCustomer.getCustomerId();
 			if (customerId != null) {
-				return "Customer Added Successfully! Customer ID is " + customerId;
+				CustomerDTO addedCustomerDTO=CustomerDTO.builder().customerId(customerId).firstName(addedCustomer.getFirstName()).lastName(addedCustomer.getLastName())
+				.phone(addedCustomer.getPhone()).email(addedCustomer.getEmail()).build();
+				return addedCustomerDTO;
 			}
 		}
-		return "Customer could not be added";
+		return null;
 	}
 
 	public List<CustomerDTO> getAllCustomers() {
-		System.out.println("test");
 		return customerRepo.findAll().stream().map(CustomerDTO::new).toList();
 	}
 
