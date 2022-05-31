@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface CustomerService {
 	
-    public String addCustomer(CustomerDTO customerModel);
+    public CustomerDTO addCustomer(CustomerDTO customerModel);
     
     public List<CustomerDTO> getAllCustomers();
     
