@@ -6,6 +6,9 @@
 /out-tsc
 /bazel-out
 /src/main/web/node/**
+/node
+/target
+/target/*
 
 # Node
 /node_modules
