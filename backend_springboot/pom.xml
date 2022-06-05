@@ -84,10 +84,11 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}/classes/resources/</outputDirectory>
+							<overwrite>true</overwrite>
+							<outputDirectory>${project.build.directory}/classes/static/</outputDirectory>
 							<resources>
 								<resource>
-									<directory>${project.parent.basedir}/frontend_angular/src/main/web/dist/frontend_angular/</directory>
+									<directory>../frontend_angular/dist/frontend_angular/</directory>
 								</resource>
 							</resources>
 						</configuration>
