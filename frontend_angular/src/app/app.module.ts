@@ -12,13 +12,19 @@ import {AuthService} from './services/auth.service';
 import {CustomersService} from './services/customers.service';
 import { CustomersListComponent } from './customers-list/customers-list.component';
 import { AuthInterceptorInterceptor } from './auth-interceptor.interceptor';
+import { SignupComponent } from './signup/signup.component';
+import { HomeComponent } from './home/home.component';
+import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AuthComponent,
     NavComponent,
-    CustomersListComponent
+    CustomersListComponent,
+    SignupComponent,
+    HomeComponent,
+    PagenotfoundComponent
   ],
   imports: [
     BrowserModule,

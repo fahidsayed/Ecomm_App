@@ -1,0 +1,23 @@
+.formwrapperdiv{
+    width:40%;
+    margin: auto;
+    margin-top: 3vh;
+}
+.dateofbirthgroup{
+    color: #6c757d;
+}
+.dateofbirthselects{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2vh;
+}
+.dateofbirthselects select{
+    color: #6c757d;
+    width: 32%;
+    background-color: #fff;
+}
+/* .dateofbirthselects select option{
+    height: auto;
+    max-height: 200px;
+    overflow-x: hidden;
+} */
