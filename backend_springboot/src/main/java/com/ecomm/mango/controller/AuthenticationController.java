@@ -6,7 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,8 +18,12 @@ import com.ecomm.grapes.entity.User;
 import com.ecomm.mango.exception.MangoApplicationException;
 import com.ecomm.mango.models.AuthenticationRequest;
 import com.ecomm.mango.models.AuthenticationResponse;
+import com.ecomm.mango.models.AutoLoginRequest;
+import com.ecomm.mango.models.AutoLoginResponse;
 import com.ecomm.mango.models.SignUpRequest;
 import com.ecomm.mango.models.SignUpResponse;
+import com.ecomm.mango.models.UserInfo;
+import com.ecomm.mango.service.MyUserDetails;
 import com.ecomm.mango.service.MyUserDetailsService;
 import com.ecomm.mango.util.JwtUtil;
 
@@ -44,9 +50,11 @@ public class AuthenticationController {
 		} catch (AuthenticationException e) {
 			throw new MangoApplicationException("Bad Credentials " + e);
 		}
-		UserDetails userDetails = myUserDetailsService.loadUserByUsername(authRequest.getEmail());
+		MyUserDetails userDetails = myUserDetailsService.loadUserByUsername(authRequest.getEmail());
 		String token = jwtUtil.generateToken(userDetails);
-		AuthenticationResponse response = AuthenticationResponse.builder().jwt(token).build();
+		UserInfo userInfo = UserInfo.builder().firstName(userDetails.getFirstName()).lastName(userDetails.getLastName())
+				.phone(userDetails.getPhone()).email(userDetails.getEmail()).build();
+		AuthenticationResponse response = AuthenticationResponse.builder().jwt(token).userInfo(userInfo).build();
 		return new ResponseEntity<AuthenticationResponse>(response, HttpStatus.OK);
 	}
 
@@ -68,5 +76,30 @@ public class AuthenticationController {
 					.message("Failed due to some reason").build();
 			return new ResponseEntity<SignUpResponse>(signUpResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+	
+	@PostMapping("/autoLogin")
+	public ResponseEntity<AutoLoginResponse> validateJwtToken(@RequestBody AutoLoginRequest autoLoginRequest){
+		String jwt = autoLoginRequest.getJwtToken();
+		if(autoLoginRequest==null || jwt==null) {
+			AutoLoginResponse autoLoginResponse = AutoLoginResponse.builder().validToken(false).userInfo(null).build();
+			return ResponseEntity.ok(autoLoginResponse);
+		}		
+		String userName=jwtUtil.extractUserName(jwt);
+		if(userName==null) {
+			return ResponseEntity.notFound().build();
+		}
+		if(userName!=null) {
+			MyUserDetails userDetails=myUserDetailsService.loadUserByUsername(userName);
+			if(jwtUtil.validateToken(jwt, userDetails)) {
+				UserInfo userInfo = UserInfo.builder().firstName(userDetails.getFirstName()).lastName(userDetails.getLastName())
+						.email(userDetails.getEmail()).phone(userDetails.getPhone()).build();
+				AutoLoginResponse autoLoginResponse = AutoLoginResponse.builder().validToken(true).userInfo(userInfo).build();
+				return ResponseEntity.ok(autoLoginResponse);
+			}else {
+				return ResponseEntity.internalServerError().build();
+			}
+		}
+		return ResponseEntity.internalServerError().build();
 	}
 }

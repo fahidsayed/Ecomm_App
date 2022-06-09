@@ -1,7 +1,6 @@
-
 import { UserInfo } from "./userinfo";
 
-export class AuthResponse {
-    jwt:string="";
+export class AutoLoginResponse{
+    validToken:boolean=false;
     userInfo:UserInfo=new UserInfo();
 }
