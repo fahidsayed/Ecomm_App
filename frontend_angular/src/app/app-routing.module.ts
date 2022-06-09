@@ -5,13 +5,14 @@ import {SignupComponent} from './signup/signup.component'
 import {CustomersListComponent} from './customers-list/customers-list.component';
 import { HomeComponent } from './home/home.component';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
+import { AuthGuard } from './services/auth.guard';
 
 const routes: Routes = [
-  {path:'auth',component:AuthComponent},
+  {path:'login',component:AuthComponent},
   {path:'signup',component:SignupComponent},
   {path:'customerslist',component:CustomersListComponent},
-  {path:'home',component:HomeComponent},
-  {path:'',redirectTo:'/home',pathMatch:'full'},
+  {path:'home',component:HomeComponent,canActivate:[AuthGuard]},
+  {path:'',redirectTo:'/login',pathMatch:'full'},
   {path:'**',component:PagenotfoundComponent}
 ];
 

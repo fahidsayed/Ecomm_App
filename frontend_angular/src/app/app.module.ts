@@ -15,7 +15,9 @@ import { AuthInterceptorInterceptor } from './auth-interceptor.interceptor';
 import { SignupComponent } from './signup/signup.component';
 import { HomeComponent } from './home/home.component';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
-
+import { AuthGuard } from './services/auth.guard';
+// import { StoreModule } from '@ngrx/store';
+// import { reducers } from './reducers';
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,8 +33,9 @@ import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
     AppRoutingModule,
     FormsModule,
     HttpClientModule
+    // StoreModule.forRoot(reducers)
   ],
-  providers: [AuthService,CustomersService,
+  providers: [AuthService,CustomersService,AuthGuard,
   {provide:HTTP_INTERCEPTORS,useClass:AuthInterceptorInterceptor,multi:true}],
   bootstrap: [AppComponent]
 })
